@@ -5,8 +5,20 @@ body:
   - type: markdown
     attributes:
       value: |
-        **Tip:** Use the `Report a bug / Suggest an idea` button in Kiro to automatically include your system info and conversation ID, then click `Preview on GitHub` to submit.
+        ---
+        ## ⚠️ Before you open this issue
 
+        Please check if your problem matches any of the known issues below. If so, **subscribe and comment to the following issues for updates** instead of opening a new one:
+
+        [#413: "unexpected error occurred, please retry" in Kiro chat](https://github.com/kirodotdev/Kiro/issues/413)
+        [#87: Remote SSH login issues](https://github.com/kirodotdev/Kiro/issues/87)
+
+        Thank you for helping us keep our issue tracker organized
+        ---
+  - type: markdown
+    attributes:
+      value: |
+        **Tip:** Use the `Report a bug / Suggest an idea` button in Kiro to automatically include your system info and conversation ID, then click `Preview on GitHub` to submit.
   - type: input
     id: os
     attributes:
