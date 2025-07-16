@@ -12,8 +12,9 @@ body:
 
         [#413: "unexpected error occurred, please retry" in Kiro chat](https://github.com/kirodotdev/Kiro/issues/413)
         [#87: Remote SSH login issues](https://github.com/kirodotdev/Kiro/issues/87)
-
-        Thank you for helping us keep our issue tracker organized
+        
+        Thank you for helping us keep our issue tracker organized.
+        
         ---
   - type: markdown
     attributes:
