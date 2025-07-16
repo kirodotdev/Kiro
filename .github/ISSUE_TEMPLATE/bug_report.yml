@@ -8,7 +8,7 @@ body:
         ---
         ## ⚠️ Before you open this issue
 
-        Please check if your problem matches any of the known issues below. If so, **subscribe and comment to the following issues for updates** instead of opening a new one:
+        ### Please check if the following issues may be a known issue. If so, **subscribe and comment to the following issues for updates** instead of opening a new one:
 
         [#413: "unexpected error occurred, please retry" in Kiro chat](https://github.com/kirodotdev/Kiro/issues/413)
         [#87: Remote SSH login issues](https://github.com/kirodotdev/Kiro/issues/87)
@@ -20,6 +20,13 @@ body:
     attributes:
       value: |
         **Tip:** Use the `Report a bug / Suggest an idea` button in Kiro to automatically include your system info and conversation ID, then click `Preview on GitHub` to submit.
+  - type: checkboxes
+    attributes:
+      label: |
+        Before opening, please confirm:
+      options:
+        - label: I have [searched for duplicate or closed issues](https://github.com/kirodotdev/Kiro/issues?q=is%3Aissue+)
+          required: true
   - type: input
     id: os
     attributes:
