@@ -1,0 +1,106 @@
+name: Scan for Duplicate Issues and Comment
+
+on:
+  workflow_dispatch:
+    inputs:
+      search_string:
+        description: 'The string to search for within issue titles and bodies.'
+        required: true
+        type: string
+      comment_body:
+        description: 'The comment to add if the string is found.'
+        required: true
+        type: string
+
+jobs:
+  scan_and_comment:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write # Grants the workflow permission to read and write issue comments
+
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Create working directory
+        run: mkdir -p ${{ github.workspace }}
+
+      - name: Install Octokit
+        run: npm install @octokit/rest
+
+      - name: Scan issues and comment
+        id: scan_issues
+        run: |
+          node -e '
+            const { Octokit } = require("@octokit/rest");
+            const octokit = new Octokit({
+              auth: process.env.GITHUB_TOKEN,
+            });
+
+            async function checkExistingComment(owner, repo, issue_number, commentBody) {
+              try {
+                const { data: comments } = await octokit.rest.issues.listComments({
+                  owner,
+                  repo,
+                  issue_number,
+                });
+                
+                return comments.some(comment => comment.body === commentBody);
+              } catch (error) {
+                console.error(`Error checking comments for issue #${issue_number}:`, error);
+                return false;
+              }
+            }
+
+            async function scanIssuesAndComment() {
+              const searchString = process.env.SEARCH_STRING;
+              const commentBody = process.env.COMMENT_BODY;
+              const [owner, repo] = process.env.GITHUB_REPOSITORY.split("/");
+
+              console.log(`Scanning issues for: "${searchString}"`);
+
+              try {
+                const { data: issues } = await octokit.rest.issues.listForRepo({
+                  owner,
+                  repo,
+                  state: "open", // Only scan open issues
+                });
+
+                for (const issue of issues) {
+                  if (issue.title.includes(searchString) || (issue.body && issue.body.includes(searchString))) {
+                    console.log(`Found matching issue: #${issue.number} - ${issue.title}`);
+                    
+                    // Check if the comment already exists
+                    const commentExists = await checkExistingComment(owner, repo, issue.number, commentBody);
+                    
+                    if (commentExists) {
+                      console.log(`Comment already exists on issue #${issue.number}, skipping...`);
+                      continue;
+                    }
+
+                    // Create an issue comment using the REST API
+                    await octokit.rest.issues.createComment({
+                      owner,
+                      repo,
+                      issue_number: issue.number,
+                      body: commentBody,
+                    });
+                    console.log(`Commented on issue #${issue.number}`);
+                  }
+                }
+                console.log("Issue scanning complete.");
+              } catch (error) {
+                console.error("Error scanning issues or adding comments:", error);
+                process.exit(1); // Exit with an error code
+              }
+            }
+
+            scanIssuesAndComment();
+          '
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SEARCH_STRING: ${{ inputs.search_string }}
+          COMMENT_BODY: ${{ inputs.comment_body }}
