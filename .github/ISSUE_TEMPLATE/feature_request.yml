@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
 
-        **Tip:** Use the `Report a bug / Suggest an idea` button in Kiro, then click `Preview on GitHub` to submit.
+        ## Before submitting a Feature request, please [search and confirm](https://github.com/kirodotdev/Kiro/issues?q=sort%3Aupdated-desc%20is%3Aissue%20is%3Aopen%20type%3AFeature) that it does not yet exist. Duplicate requests will be closed.
 
   - type: textarea
     id: feature-description
