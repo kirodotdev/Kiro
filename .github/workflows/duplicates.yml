@@ -1,0 +1,205 @@
+name: Scan for Duplicate Issues and Comment
+
+on:
+  workflow_dispatch:
+    inputs:
+      search_string:
+        description: 'The string to search for within issue titles and bodies.'
+        required: true
+        type: string
+      comment_body:
+        description: 'The comment to add if the string is found.'
+        required: true
+        type: string
+      exclude_issues:
+        description: 'Comma-separated list of issue numbers to exclude (e.g., "123,456,789")'
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  scan_and_comment:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Create working directory
+        run: mkdir -p ${{ github.workspace }}
+
+      - name: Install dependencies
+        run: npm install @octokit/rest @octokit/graphql
+
+      - name: Scan issues and comment
+        id: scan_issues
+        run: |
+          node -e '
+            const { Octokit } = require("@octokit/rest");
+            const { graphql } = require("@octokit/graphql");
+
+            const octokit = new Octokit({
+              auth: process.env.GITHUB_TOKEN,
+            });
+
+            const graphqlWithAuth = graphql.defaults({
+              headers: {
+                authorization: `token ${process.env.GITHUB_TOKEN}`,
+              },
+            });
+
+            // Parse excluded issue numbers
+            function getExcludedIssues() {
+              const excludeString = process.env.EXCLUDE_ISSUES || "";
+              if (!excludeString.trim()) return new Set();
+              
+              return new Set(
+                excludeString
+                  .split(",")
+                  .map(num => parseInt(num.trim()))
+                  .filter(num => !isNaN(num))
+              );
+            }
+
+            async function getAllComments(owner, repo, issue_number) {
+              const comments = [];
+              try {
+                for await (const response of octokit.paginate.iterator(
+                  octokit.rest.issues.listComments,
+                  {
+                    owner,
+                    repo,
+                    issue_number,
+                    per_page: 100
+                  }
+                )) {
+                  comments.push(...response.data);
+                }
+                return comments;
+              } catch (error) {
+                console.error(`Error fetching comments for issue #${issue_number}:`, error);
+                return [];
+              }
+            }
+
+            async function checkExistingComment(owner, repo, issue_number, commentBody) {
+              const comments = await getAllComments(owner, repo, issue_number);
+              return comments.some(comment => comment.body === commentBody);
+            }
+
+            async function searchIssues(owner, repo, searchString) {
+              const issues = [];
+              let hasNextPage = true;
+              let cursor = null;
+
+              while (hasNextPage) {
+                const query = `
+                  query searchIssues($queryString: String!, $cursor: String) {
+                    search(
+                      query: $queryString,
+                      type: ISSUE,
+                      first: 100,
+                      after: $cursor
+                    ) {
+                      pageInfo {
+                        hasNextPage
+                        endCursor
+                      }
+                      nodes {
+                        ... on Issue {
+                          number
+                          title
+                          url
+                          repository {
+                            nameWithOwner
+                          }
+                        }
+                      }
+                    }
+                  }
+                `;
+
+                const queryString = `${searchString} repo:${owner}/${repo} is:issue is:open`;
+
+                try {
+                  const result = await graphqlWithAuth(query, {
+                    queryString,
+                    cursor,
+                  });
+
+                  const filteredIssues = result.search.nodes.filter(
+                    node => node.repository.nameWithOwner === `${owner}/${repo}`
+                  );
+
+                  issues.push(...filteredIssues);
+                  hasNextPage = result.search.pageInfo.hasNextPage;
+                  cursor = result.search.pageInfo.endCursor;
+                } catch (error) {
+                  console.error("Error executing GraphQL query:", error);
+                  throw error;
+                }
+              }
+
+              return issues;
+            }
+
+            async function scanIssuesAndComment() {
+              const searchString = process.env.SEARCH_STRING;
+              const commentBody = process.env.COMMENT_BODY;
+              const [owner, repo] = process.env.GITHUB_REPOSITORY.split("/");
+              const excludedIssues = getExcludedIssues();
+
+              console.log(`Searching issues for: "${searchString}"`);
+              if (excludedIssues.size > 0) {
+                console.log(`Excluding issues: ${[...excludedIssues].join(", ")}`);
+              }
+
+              try {
+                const issues = await searchIssues(owner, repo, searchString);
+                console.log(`Found ${issues.length} matching issues`);
+
+                for (const issue of issues) {
+                  // Skip excluded issues
+                  if (excludedIssues.has(issue.number)) {
+                    console.log(`Skipping excluded issue #${issue.number}`);
+                    continue;
+                  }
+
+                  console.log(`Processing issue: #${issue.number} - ${issue.title}`);
+                  
+                  // Check if the comment already exists
+                  const commentExists = await checkExistingComment(owner, repo, issue.number, commentBody);
+                  
+                  if (commentExists) {
+                    console.log(`Comment already exists on issue #${issue.number}, skipping...`);
+                    continue;
+                  }
+
+                  // Create an issue comment using the REST API
+                  await octokit.rest.issues.createComment({
+                    owner,
+                    repo,
+                    issue_number: issue.number,
+                    body: commentBody,
+                  });
+                  console.log(`Commented on issue #${issue.number}`);
+                }
+                console.log("Issue processing complete.");
+              } catch (error) {
+                console.error("Error processing issues or adding comments:", error);
+                process.exit(1);
+              }
+            }
+
+            scanIssuesAndComment();
+          '
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SEARCH_STRING: ${{ inputs.search_string }}
+          COMMENT_BODY: ${{ inputs.comment_body }}
+          EXCLUDE_ISSUES: ${{ inputs.exclude_issues }}
