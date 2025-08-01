@@ -65,7 +65,7 @@ We welcome feedback and issue reports to help improve Kiro. Please use this repo
 For additional support beyond issue reporting:
 - Join our community [discord server](https://discord.gg/kirodotdev) for quick help and discussions with other developers
 - For billing-related questions, please contact our support team through [AWS Billing Support](https://support.aws.amazon.com/#/contacts/kiro).
-- For technical issues or general assistance, reach out via [AWS Support](https://docs.aws.amazon.com/awssupport/latest/user/case-management.html#creating-a-support-case).
+- If you are an existing AWS customer with a paid support plan, for technical issues or general assistance, reach out via [AWS Support](https://support.console.aws.amazon.com/support/home#/).
 
 ## Security
 If you discover a potential security issue in this project we ask that you notify AWS/Amazon Security via our [vulnerability reporting page](http://aws.amazon.com/security/vulnerability-reporting/). Please do **not** create a public github issue.
