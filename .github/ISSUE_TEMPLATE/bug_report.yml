@@ -8,16 +8,17 @@ body:
         ---
         ## ⚠️ Before you open this issue
 
-        ### Please check if the following issues may be a known issue. If so, **subscribe and comment to the following issues for updates** instead of opening a new one:
+        **Please ensure you're using the latest version of Kiro.** If you're an existing user or have been invited off the waitlist, use the [download links](https://kiro.dev/downloads/) to install or upgrade. Otherwise, join the [waitlist](https://kiro.dev/waitlist/) to get access.
 
-        [#413: "An unexpected error occurred / Slow Response / Throttling" in Kiro chat](https://github.com/kirodotdev/Kiro/issues/413)
+        **Check if your issue is already known.** If so, **subscribe and comment to the following issues for updates** instead of opening a new one:
+
         [#195: Support for multi-root workspaces](https://github.com/kirodotdev/Kiro/issues/195)
         [#194: Generate Commit Message" button for Kiro's Git integration](https://github.com/kirodotdev/Kiro/issues/194)
         [#87: Remote SSH login issues](https://github.com/kirodotdev/Kiro/issues/87)
         [#31: Provide a token counter in the chat window](https://github.com/kirodotdev/Kiro/issues/31)
 
         Thank you for helping us keep our issue tracker organized.
-        
+
         ---
   - type: markdown
     attributes:
