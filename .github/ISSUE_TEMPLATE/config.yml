@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
+  - name: 💵 AWS Billing Support
+    url: https://support.aws.amazon.com/#/contacts/kiro
+    about: For billing-related questions, please contact AWS Billing Support.
   - name: 💬 Kiro Community Discord
     url: https://discord.gg/kirodotdev
     about: Join the community to discuss features, share feedback, and connect with other developers using Kiro.
