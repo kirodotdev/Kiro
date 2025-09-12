@@ -9,12 +9,22 @@
 
 ## Core Capabilities
 
-- **Specs** - Plan and build features using structured specifications that break down requirements into detailed implementation plans
-- **Hooks** - Automate repetitive tasks with intelligent triggers that respond to file changes and development events
-- **Agentic Chat** - Build features through natural conversation with Kiro that understands your project context
-- **Steering** - Guide Kiro's behavior with custom rules and project-specific context through markdown files
-- **MCP Servers** - Connect external tools and data sources through the Model Context Protocol
-- **Privacy First** - Keep your code secure with enterprise-grade security and privacy
+
+## Node.js Development Setup
+
+If you are contributing to Kiro using Node.js:
+
+- Make sure you have [Node.js](https://nodejs.org/) installed.
+- Run `npm install` to install dependencies.
+- Note: There are currently no test or build scripts defined in `package.json`. You may add these as needed for your contributions.
+
+## Troubleshooting
+
+If you encounter errors such as missing `package.json` or npm install failures:
+
+- Ensure you are in the correct project directory.
+- If `package.json` is missing, run `npm init -y` to create one.
+- For other npm errors, check the error message and refer to the [npm documentation](https://docs.npmjs.com/).
 
 ## Platform Support
 
