@@ -18,6 +18,16 @@ If you are contributing to Kiro using Node.js:
 - Run `npm install` to install dependencies.
 - Note: There are currently no test or build scripts defined in `package.json`. You may add these as needed for your contributions.
 
+## Manual Process Kill Feature
+
+If a terminal command hangs and Ctrl+C does not work, you can manually kill the process using the `processManager.js` utility:
+
+1. Open `processManager.js` in the project root.
+2. Use the `runCommand(command, args)` function to start a process (e.g., `runCommand('npm', ['start'])`).
+3. If the process hangs, call `killRunningProcess()` to terminate it.
+
+This helps prevent stuck processes without closing the terminal window. You can further integrate this feature into your main application as needed.
+
 ## Troubleshooting
 
 If you encounter errors such as missing `package.json` or npm install failures:
