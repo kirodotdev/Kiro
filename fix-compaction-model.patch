@@ -1,0 +1,14 @@
+--- a/resources/app/extensions/kiro.kiro-agent/dist/extension.js
++++ b/resources/app/extensions/kiro.kiro-agent/dist/extension.js
+@@ -668863,7 +668863,7 @@
+       defaultCompressionRatio: 0.5,
+       maxCompactionTimeMs: 6e4,
+       // 60 seconds
+       preserveUserMessages: true,
+       preserveToolResults: true,
+       provider: "qdev",
+-      analysisModel: "CLAUDE_3_7_SONNET_20250219_V1_0",
++      analysisModel: getSelectedModelId() || "CLAUDE_SONNET_4_5_20250929_V1_0",
+       strategies: {
+         "compression-tagging": {
+           enabled: true,
