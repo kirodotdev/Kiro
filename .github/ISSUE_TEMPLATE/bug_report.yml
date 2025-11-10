@@ -91,6 +91,16 @@ body:
       placeholder: "e.g., 1234-5678-9876"
     validations:
       required: false
+  
+  - type: input
+    id: machine-id
+    attributes:
+      label: Machine ID
+      description: |
+        The Machine ID where the issue occurred (automatically populated when submitted from the IDE)
+      placeholder: "e.g., 1234-5678-9876"
+    validations:
+      required: false
 
   - type: textarea
     id: additional-context
