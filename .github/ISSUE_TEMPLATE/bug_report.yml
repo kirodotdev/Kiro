@@ -13,7 +13,6 @@ body:
         **Check if your issue is already known.** If so, **subscribe and comment to the following issues for updates** instead of opening a new one:
 
         [#195: Support for multi-root workspaces](https://github.com/kirodotdev/Kiro/issues/195)
-        [#194: Generate Commit Message" button for Kiro's Git integration](https://github.com/kirodotdev/Kiro/issues/194)
         [#87: Remote SSH login issues](https://github.com/kirodotdev/Kiro/issues/87)
         [#31: Provide a token counter in the chat window](https://github.com/kirodotdev/Kiro/issues/31)
 
