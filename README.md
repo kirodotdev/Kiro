@@ -44,15 +44,15 @@ Import your VS Code setup including extensions and settings during the initial s
 
 ## Documentation
 
-**[📚 View Documentation →](https://docs.kiro.dev)**
+**[📚 View Documentation →](https://kiro.dev/docs/)**
 
-- **[Getting Started](https://docs.kiro.dev/getting-started)** - Installation and first project setup
-- **[Chat](https://docs.kiro.dev/chat)** - Contextual conversations and code generation
-- **[Specs](https://docs.kiro.dev/specs)** - Structured feature development
-- **[Hooks](https://docs.kiro.dev/hooks)** - Workflow automation with intelligent triggers
-- **[Steering](https://docs.kiro.dev/steering)** - Project-specific AI guidance
-- **[MCP](https://docs.kiro.dev/mcp)** - External tool and service connections
-- **[Troubleshooting](https://docs.kiro.dev/reference/troubleshooting)** - Troubleshooting and privacy information
+- **[Getting Started](https://kiro.dev/docs/)** - Installation and first project setup
+- **[Chat](https://kiro.dev/docs/chat/)** - Contextual conversations and code generation
+- **[Specs](https://kiro.dev/docs/specs/)** - Structured feature development
+- **[Hooks](https://kiro.dev/docs/hooks/)** - Workflow automation with intelligent triggers
+- **[Steering](https://kiro.dev/docs/steering/)** - Project-specific AI guidance
+- **[MCP](https://kiro.dev/docs/mcp/)** - External tool and service connections
+- **[Troubleshooting](https://kiro.dev/docs/reference/troubleshooting/)** - Troubleshooting and privacy information
 
 ## Issue Reporting
 We welcome feedback and issue reports to help improve Kiro. Please use this repository to:
