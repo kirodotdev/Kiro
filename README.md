@@ -3,7 +3,7 @@
   
   # Kiro
   
-  Kiro is an agentic IDE that helps you go from prototype to production with spec-driven development, agent hooks, and natural language coding assistance. Build faster with AI-powered features that understand your entire codebase, turn prompts into structured specs, and automate repetitive tasks.
+  Kiro is an agentic IDE and command-line interface that helps you go from prototype to production with spec-driven development, agent hooks, and natural language coding assistance. Build faster with AI-powered features that understand your entire codebase, turn prompts into structured specs, and automate repetitive tasks.
   
 </div>
 
@@ -16,17 +16,28 @@
 - **MCP Servers** - Connect external tools and data sources through the Model Context Protocol
 - **Privacy First** - Keep your code secure with enterprise-grade security and privacy
 
-## Platform Support
+## Available Interfaces
 
-Kiro is available as a standalone desktop application for:
-- **macOS**
-- **Windows** 
-- **Linux**
+Kiro is available as both a desktop application and command-line tool:
+
+### Kiro IDE (Desktop Application)
+The standalone desktop application is available for:
+- macOS
+- Windows
+- Linux
+
+### Kiro CLI
+Command-line interface for integrating Kiro into your development workflows and automation scripts.
+
+For detailed information on both interfaces, visit [kiro.dev](https://kiro.dev)
 
 ## Getting Started
 
 ### Download & Install
-Download the Kiro desktop application directly from our website -  **[kiro.dev](https://kiro.dev)**
+
+**IDE:** Download the Kiro desktop application directly from [kiro.dev](https://kiro.dev)
+
+**CLI:** Instructions for installing the Kiro CLI are available in our [documentation](https://kiro.dev/cli)
 
 ### First Project
 
@@ -46,13 +57,9 @@ Import your VS Code setup including extensions and settings during the initial s
 
 **[📚 View Documentation →](https://kiro.dev/docs/)**
 
-- **[Getting Started](https://kiro.dev/docs/)** - Installation and first project setup
-- **[Chat](https://kiro.dev/docs/chat/)** - Contextual conversations and code generation
-- **[Specs](https://kiro.dev/docs/specs/)** - Structured feature development
-- **[Hooks](https://kiro.dev/docs/hooks/)** - Workflow automation with intelligent triggers
-- **[Steering](https://kiro.dev/docs/steering/)** - Project-specific AI guidance
-- **[MCP](https://kiro.dev/docs/mcp/)** - External tool and service connections
-- **[Troubleshooting](https://kiro.dev/docs/reference/troubleshooting/)** - Troubleshooting and privacy information
+- [Getting Started](https://kiro.dev/docs/getting-started) - Installation and first project setup for IDE and CLI
+- [IDE Guide](https://kiro.dev/docs/ide) - Desktop application features and workflows
+- [CLI Guide](https://kiro.dev/docs/cli) - Command-line interface usage and automation
 
 ## Issue Reporting
 We welcome feedback and issue reports to help improve Kiro. Please use this repository to:
@@ -65,7 +72,7 @@ We welcome feedback and issue reports to help improve Kiro. Please use this repo
 For additional support beyond issue reporting:
 - Join our community [discord server](https://discord.gg/kirodotdev) for quick help and discussions with other developers
 - For billing-related questions, please contact our support team through [AWS Billing Support](https://support.aws.amazon.com/#/contacts/kiro).
-- If you are an existing AWS customer with a paid support plan, for technical issues or general assistance, reach out via [AWS Support](https://support.console.aws.amazon.com/support/home#/).
+- If you are an existing AWS customer with a [paid support plan](https://aws.amazon.com/premiumsupport/plans/), for technical issues or general assistance, reach out via [AWS Support](https://support.console.aws.amazon.com/support/home#/).
 
 ## Security
 If you discover a potential security issue in this project we ask that you notify AWS/Amazon Security via our [vulnerability reporting page](http://aws.amazon.com/security/vulnerability-reporting/). Please do **not** create a public github issue.
