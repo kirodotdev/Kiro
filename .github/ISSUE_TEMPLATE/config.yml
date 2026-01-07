@@ -1,14 +1,14 @@
 blank_issues_enabled: false
 contact_links:
-  - name: 💵 AWS Billing Support
-    url: https://support.aws.amazon.com/#/contacts/kiro
-    about: For billing-related questions, please contact AWS Billing Support.
-  - name: 💬 Kiro Community Discord
-    url: https://discord.gg/kirodotdev
-    about: Join the community to discuss features, share feedback, and connect with other developers using Kiro.
-  - name: 📚 Kiro Documentation
-    url: https://docs.kiro.dev
-    about: Refer to our technical documentation for guides, best practices and troubleshooting common issues.
-  - name: 👻 Kiro Website
-    url: https://kiro.dev
-    about: Learn about Kiro features and download the latest version.
+  - name: "💵 AWS Billing Support"
+    url: "https://support.aws.amazon.com/#/contacts/kiro"
+    about: "For billing and invoice questions — open a case with AWS Billing Support."
+  - name: "💬 Kiro Community (Discord)"
+    url: "https://discord.gg/kirodotdev"
+    about: "Join the community to discuss features, report issues, and share tips."
+  - name: "📚 Kiro Documentation"
+    url: "https://docs.kiro.dev"
+    about: "Guides, API references, and troubleshooting — official docs for developers."
+  - name: "👻 Kiro Website"
+    url: "https://kiro.dev"
+    about: "Learn about Kiro, download releases, and read the latest announcements."
