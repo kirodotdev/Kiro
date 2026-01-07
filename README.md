@@ -3,7 +3,7 @@
   
   # Kiro
   
-  Kiro is an agentic IDE and command-line interface that helps you go from prototype to production with spec-driven development, agent hooks, and natural language coding assistance. Build faster with AI-powered features that understand your entire codebase, turn prompts into structured specs, and automate repetitive tasks.
+  Kiro is an agentic IDE and command-line interface that helps you go from prototype to production with spec-driven development, agent hooks,powers, and natural language coding assistance. Build faster with AI-powered features that understand your entire codebase, turn prompts into structured specs, and automate repetitive tasks.
   
 </div>
 
@@ -14,6 +14,7 @@
 - **Agentic Chat** - Build features through natural conversation with Kiro that understands your project context
 - **Steering** - Guide Kiro's behavior with custom rules and project-specific context through markdown files
 - **MCP Servers** - Connect external tools and data sources through the Model Context Protocol
+- **Powers** -  Specialized context and tools for Kiro agents on-demand. Extend agent capabilities with domain-specific knowledge and custom integrations
 - **Privacy First** - Keep your code secure with enterprise-grade security and privacy
 
 ## Available Interfaces
