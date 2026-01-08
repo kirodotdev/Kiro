@@ -20,6 +20,8 @@ on:
 jobs:
   scan_and_comment:
     runs-on: ubuntu-latest
+    # Restrict workflow execution to repository owners only
+    if: github.event.sender.type == 'User' && github.repository_owner == github.actor
     permissions:
       contents: read
       issues: write

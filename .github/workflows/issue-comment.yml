@@ -9,11 +9,22 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       issues: write
+    # Verify comment author has appropriate permissions before processing
+    if: github.event.action == 'created' && github.event.comment != null
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       ISSUE_NUMBER: ${{ github.event.issue.number }}
       REPOSITORY_NAME: ${{ github.event.repository.full_name }}
+      COMMENT_AUTHOR_ASSOCIATION: ${{ github.event.comment.author_association }}
     steps:
+      - name: Validate comment authentication
+        run: |
+          if [ -z "${{ github.event.comment.user.login }}" ]; then
+            echo "Error: Comment author not authenticated"
+            exit 1
+          fi
+          echo "Comment author: ${{ github.event.comment.user.login }}"
+          echo "Author association: ${COMMENT_AUTHOR_ASSOCIATION}"
       - name: Remove pending-response when new comment received
         if: ${{ !contains(fromJSON('["MEMBER", "OWNER"]'), github.event.comment.author_association) && !github.event.issue.pull_request }}
         shell: bash

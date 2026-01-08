@@ -29,4 +29,24 @@ opensource-codeofconduct@amazon.com with any additional questions or comments.
 ## Security issue notifications
 If you discover a potential security issue in this project we ask that you notify AWS/Amazon Security via our [vulnerability reporting page](http://aws.amazon.com/security/vulnerability-reporting/). Please do **not** create a public github issue.
 
+## Authentication and Access Control
+
+This repository implements the following authentication and access control measures to ensure system security:
+
+### GitHub Actions Workflows
+- **Authentication Requirement**: All automated workflows require GitHub authentication to execute
+- **Owner Verification**: `workflow_dispatch` triggered workflows verify the actor is the repository owner
+- **Comment Validation**: Issue comment workflows validate the commenter's GitHub identity and authorization level
+- **Least Privilege**: Workflow permissions follow the principle of least privilege with minimal required scopes
+
+### Repository Access
+- **Branch Protection**: The main branch requires pull request reviews from code owners before merging
+- **CODEOWNERS**: All code changes require review and approval from designated maintainers
+- **Token Management**: GitHub tokens used in workflows are scoped to minimum required permissions
+
+### User Authentication
+- GitHub OAuth authentication is required for all users interacting with this repository
+- Users must have a verified GitHub account to participate
+- API calls are authenticated using GitHub tokens with appropriate scopes
+
 
