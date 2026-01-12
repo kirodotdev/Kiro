@@ -85,4 +85,4 @@ opensource-codeofconduct@amazon.com with any additional questions or comments.
 
 
 ---
-©2025 Amazon.com, Inc. or its affiliates (collectively, "Amazon"). All Rights Reserved.
+©2026 Amazon.com, Inc. or its affiliates (collectively, "Amazon"). All Rights Reserved.
