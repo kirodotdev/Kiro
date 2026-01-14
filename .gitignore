@@ -1,0 +1,43 @@
+# macOS
+.DS_Store
+*.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+# Documentation files not for check-in
+.github/*.md
+!.github/workflows/README.md
+WORKFLOW_TESTING_COMPLETE.md
+scripts/test/ISSUE_TRIAGE_WORKFLOW_TEST.md
