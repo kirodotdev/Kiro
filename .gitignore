@@ -36,3 +36,8 @@ coverage/
 *.tmp
 *.temp
 .cache/
+# Documentation files not for check-in
+.github/*.md
+!.github/workflows/README.md
+WORKFLOW_TESTING_COMPLETE.md
+scripts/test/ISSUE_TRIAGE_WORKFLOW_TEST.md
