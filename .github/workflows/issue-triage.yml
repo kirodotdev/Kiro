@@ -44,7 +44,10 @@ jobs:
 
       - name: Create workflow summary
         if: always()
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
-          echo "## Issue Triage Summary" >> $GITHUB_STEP_SUMMARY
-          echo "Issue #${{ github.event.issue.number }}: ${{ github.event.issue.title }}" >> $GITHUB_STEP_SUMMARY
-          echo "Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "## Issue Triage Summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "Issue #$ISSUE_NUMBER: $ISSUE_TITLE" >> "$GITHUB_STEP_SUMMARY"
+          echo "Status: ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
