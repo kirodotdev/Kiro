@@ -1,0 +1,85 @@
+{
+  "name": "QA and Auto-Ticketing Workflow",
+  "version": "1.0.0",
+  "description": "Intelligent workflow for answering questions and creating tickets",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "start",
+      "data": {
+        "inputs": ["user_query", "user_context"]
+      }
+    },
+    {
+      "id": "intent_classifier",
+      "type": "llm",
+      "data": {
+        "model": "gpt-4",
+        "prompt": "Classify the user intent:\n- question: User asking a question\n- issue: User reporting a problem\n- request: User requesting a feature\n\nQuery: {{user_query}}\nContext: {{user_context}}\n\nRespond with JSON: {\"intent\": \"question|issue|request\", \"confidence\": 0-1}"
+      }
+    },
+    {
+      "id": "kb_search",
+      "type": "tool",
+      "data": {
+        "tool": "mcp.knowledge_base.search",
+        "inputs": {
+          "query": "{{user_query}}",
+          "top_k": 5
+        }
+      }
+    },
+    {
+      "id": "answer_generator",
+      "type": "llm",
+      "data": {
+        "model": "gpt-4",
+        "prompt": "Answer the user's question based on the knowledge base results.\n\nQuestion: {{user_query}}\n\nKnowledge Base Results:\n{{kb_search.results}}\n\nProvide a helpful answer. If the KB doesn't contain enough information, say so clearly."
+      }
+    },
+    {
+      "id": "confidence_check",
+      "type": "condition",
+      "data": {
+        "condition": "{{answer_generator.confidence}} < 0.7 || {{kb_search.results_count}} == 0"
+      }
+    },
+    {
+      "id": "ticket_creator",
+      "type": "tool",
+      "data": {
+        "tool": "mcp.ticketing.create",
+        "inputs": {
+          "title": "{{user_query}}",
+          "description": "Auto-generated ticket\n\nOriginal Query: {{user_query}}\n\nContext: {{user_context}}\n\nAttempted Answer: {{answer_generator.response}}",
+          "priority": "{{intent_classifier.intent == 'issue' ? 'high' : 'medium'}}",
+          "labels": ["auto-generated", "{{intent_classifier.intent}}"]
+        }
+      }
+    },
+    {
+      "id": "response_formatter",
+      "type": "code",
+      "data": {
+        "code": "function format(answer, ticket) {\n  if (ticket) {\n    return `${answer}\\n\\nI've created ticket #${ticket.id} to track this further.`;\n  }\n  return answer;\n}"
+      }
+    },
+    {
+      "id": "end",
+      "type": "end",
+      "data": {
+        "outputs": ["response", "ticket_id"]
+      }
+    }
+  ],
+  "edges": [
+    {"from": "start", "to": "intent_classifier"},
+    {"from": "intent_classifier", "to": "kb_search"},
+    {"from": "kb_search", "to": "answer_generator"},
+    {"from": "answer_generator", "to": "confidence_check"},
+    {"from": "confidence_check", "to": "ticket_creator", "condition": "true"},
+    {"from": "confidence_check", "to": "response_formatter", "condition": "false"},
+    {"from": "ticket_creator", "to": "response_formatter"},
+    {"from": "response_formatter", "to": "end"}
+  ]
+}

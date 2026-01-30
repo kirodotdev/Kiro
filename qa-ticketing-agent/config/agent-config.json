@@ -1,0 +1,39 @@
+{
+  "agent": {
+    "name": "QA & Ticketing Agent",
+    "version": "1.0.0",
+    "description": "Intelligent agent for answering questions and managing tickets",
+    "model": "gpt-4",
+    "temperature": 0.7,
+    "max_tokens": 2000
+  },
+  "workflow": {
+    "engine": "dify-compatible",
+    "definition": "../workflow/qa-ticketing-flow.json"
+  },
+  "knowledge_base": {
+    "enabled": true,
+    "confidence_threshold": 0.7,
+    "min_results": 1
+  },
+  "ticketing": {
+    "auto_create": true,
+    "conditions": {
+      "low_confidence": true,
+      "no_kb_results": true,
+      "explicit_issue": true
+    },
+    "default_priority": "medium",
+    "auto_labels": ["auto-generated", "needs-review"]
+  },
+  "integrations": {
+    "slack": {
+      "enabled": false,
+      "webhook_url": ""
+    },
+    "email": {
+      "enabled": false,
+      "smtp_config": {}
+    }
+  }
+}

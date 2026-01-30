@@ -1,0 +1,18 @@
+{
+  "name": "qa-ticketing-agent",
+  "version": "1.0.0",
+  "description": "QA answering and auto-ticketing agent with Dify-like workflow",
+  "type": "module",
+  "scripts": {
+    "build": "npm run build:kb && npm run build:ticketing && npm run build:workflow",
+    "build:kb": "cd mcp-servers/knowledge-base-server && npm run build",
+    "build:ticketing": "cd mcp-servers/ticketing-server && npm run build",
+    "build:workflow": "tsc -p workflow/tsconfig.json",
+    "dev:kb": "cd mcp-servers/knowledge-base-server && npm run dev",
+    "dev:ticketing": "cd mcp-servers/ticketing-server && npm run dev",
+    "install:all": "npm install && cd mcp-servers/knowledge-base-server && npm install && cd ../ticketing-server && npm install"
+  },
+  "keywords": ["qa", "ticketing", "agent", "mcp", "workflow"],
+  "author": "",
+  "license": "MIT"
+}

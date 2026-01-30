@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "knowledge-base": {
+      "command": "node",
+      "args": ["../mcp-servers/knowledge-base-server/dist/index.js"],
+      "env": {
+        "VECTOR_DB_URL": "http://localhost:8000",
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}"
+      },
+      "disabled": false,
+      "autoApprove": ["search_knowledge_base"]
+    },
+    "ticketing": {
+      "command": "node",
+      "args": ["../mcp-servers/ticketing-server/dist/index.js"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}",
+        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}"
+      },
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}
