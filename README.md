@@ -4,7 +4,8 @@
   # Kiro
   
   Kiro is an agentic IDE and command-line interface that helps you go from prototype to production with spec-driven development, agent hooks,powers, and natural language coding assistance. Build faster with AI-powered features that understand your entire codebase, turn prompts into structured specs, and automate repetitive tasks.
-  
+
+  [<img alt="Discord link" src="https://img.shields.io/discord/1374034175430230016?style=flat&logo=discord&logoColor=white&label=discord&color=%239046ff" />](https://discord.gg/kirodotdev)
 </div>
 
 ## Core Capabilities
