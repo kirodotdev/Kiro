@@ -70,7 +70,7 @@ async function testRealIssue() {
 
     // Import and run the triage script
     // Note: This will execute the actual triage workflow
-    const triageModule = await import("../triage_issue.js");
+    await import("../triage_issue.js");
 
     console.log("");
     console.log("═".repeat(60));

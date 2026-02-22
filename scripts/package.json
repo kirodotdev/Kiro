@@ -1,23 +1,31 @@
 {
   "name": "github-issue-automation",
-  "version": "1.0.0",
-  "description": "Automated GitHub issue management with AWS Bedrock",
+  "version": "2.0.0",
+  "description": "Automated GitHub issue management with pluggable AI providers (AWS Bedrock, GitHub Models, OpenAI/Copilot)",
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "test": "jest",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest",
     "test:local": "npm run build && node dist/test/test-local.js",
-    "clean": "rm -rf dist"
+    "lint": "eslint --ext .ts .",
+    "lint:fix": "eslint --ext .ts . --fix",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "server": "npm run build && node dist/server.js",
+    "server:dev": "npx tsx server.ts"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.490.0",
     "@octokit/rest": "^20.0.2"
   },
   "devDependencies": {
-    "@types/node": "^20.10.0",
-    "typescript": "^5.3.3",
-    "jest": "^29.7.0",
     "@types/jest": "^29.5.11",
-    "ts-jest": "^29.1.1"
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^8.56.0",
+    "@typescript-eslint/parser": "^8.56.0",
+    "eslint": "^8.57.1",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.3.3"
   }
 }

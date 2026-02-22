@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desktop Share — AI Proxy</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --border: #30363d;
+    --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff;
+    --green: #3fb950; --red: #f85149; --yellow: #d29922;
+    --radius: 8px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+  /* ── Top bar ───────────────────────────────────────── */
+  .topbar { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+  .topbar h1 { font-size: 16px; font-weight: 600; white-space: nowrap; }
+  .topbar .pill { font-size: 11px; padding: 2px 8px; border-radius: 12px; background: var(--border); color: var(--muted); }
+  .topbar .pill.connected { background: #1a3a2a; color: var(--green); }
+  .topbar .pill.sharing { background: #1a2a3a; color: var(--accent); }
+  .topbar .spacer { flex: 1; }
+  .topbar .room-id { font-family: monospace; font-size: 13px; color: var(--muted); cursor: pointer; }
+  .topbar .room-id:hover { color: var(--accent); }
+
+  /* ── Buttons ────────────────────────────────────────── */
+  button { font-family: inherit; font-size: 13px; padding: 6px 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); cursor: pointer; transition: background .15s, border-color .15s; }
+  button:hover { background: var(--border); }
+  button:disabled { opacity: .4; cursor: default; }
+  button.primary { background: #238636; border-color: #2ea043; }
+  button.primary:hover { background: #2ea043; }
+  button.danger { background: #da3633; border-color: #f85149; }
+  button.danger:hover { background: #f85149; }
+
+  /* ── Main layout ────────────────────────────────────── */
+  .main { flex: 1; display: flex; overflow: hidden; }
+
+  /* ── Video area ─────────────────────────────────────── */
+  .video-area { flex: 1; display: flex; align-items: center; justify-content: center; background: #000; position: relative; }
+  .video-area video { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .video-area .placeholder { color: var(--muted); font-size: 15px; text-align: center; line-height: 1.6; }
+
+  /* ── Sidebar ────────────────────────────────────────── */
+  .sidebar { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; border-left: 1px solid var(--border); background: var(--surface); }
+  .sidebar.hidden { display: none; }
+
+  /* ── Peers panel ────────────────────────────────────── */
+  .peers-panel { padding: 12px; border-bottom: 1px solid var(--border); }
+  .peers-panel h3 { font-size: 12px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; letter-spacing: .5px; }
+  .peer-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 13px; }
+  .peer-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+  .peer-role { font-size: 11px; color: var(--muted); margin-left: auto; }
+
+  /* ── Chat ──────────────────────────────────────────── */
+  .chat-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .chat-panel h3 { font-size: 12px; text-transform: uppercase; color: var(--muted); padding: 12px 12px 8px; letter-spacing: .5px; }
+  .chat-messages { flex: 1; overflow-y: auto; padding: 0 12px 12px; }
+  .chat-msg { margin-bottom: 8px; }
+  .chat-msg .author { font-size: 12px; font-weight: 600; color: var(--accent); }
+  .chat-msg .text { font-size: 13px; color: var(--text); margin-top: 2px; word-break: break-word; }
+  .chat-msg .time { font-size: 11px; color: var(--muted); margin-left: 6px; font-weight: normal; }
+  .chat-input { display: flex; gap: 6px; padding: 8px 12px; border-top: 1px solid var(--border); }
+  .chat-input input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 6px 10px; color: var(--text); font-size: 13px; outline: none; }
+  .chat-input input:focus { border-color: var(--accent); }
+
+  /* ── Setup overlay ──────────────────────────────────── */
+  .setup-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: flex; align-items: center; justify-content: center; z-index: 100; }
+  .setup-overlay.hidden { display: none; }
+  .setup-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 32px; width: 420px; max-width: 90vw; }
+  .setup-card h2 { font-size: 20px; margin-bottom: 4px; }
+  .setup-card p { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  .setup-card label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+  .setup-card input[type="text"] { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 12px; color: var(--text); font-size: 14px; margin-bottom: 14px; outline: none; }
+  .setup-card input:focus { border-color: var(--accent); }
+  .setup-card .btn-row { display: flex; gap: 10px; margin-top: 8px; }
+  .setup-card .btn-row button { flex: 1; padding: 10px; font-size: 14px; }
+  .setup-card .or { text-align: center; color: var(--muted); font-size: 12px; margin: 10px 0; }
+
+  /* ── Fullscreen controls ────────────────────────────── */
+  .controls { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; opacity: 0; transition: opacity .3s; }
+  .video-area:hover .controls { opacity: 1; }
+
+  /* ── Scrollbar minor styling ────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ── Top bar ──────────────────────────────────────────────────────── -->
+<div class="topbar">
+  <h1>🖥️ Desktop Share</h1>
+  <span id="statusPill" class="pill">Disconnected</span>
+  <span id="roomPill" class="pill" style="display:none"></span>
+  <div class="spacer"></div>
+  <span id="roomIdDisplay" class="room-id" title="Click to copy" onclick="copyRoomLink()"></span>
+  <button id="btnToggleSidebar" onclick="toggleSidebar()">💬</button>
+</div>
+
+<!-- ── Main ─────────────────────────────────────────────────────────── -->
+<div class="main">
+  <div class="video-area" id="videoArea">
+    <video id="remoteVideo" autoplay playsinline style="display:none"></video>
+    <video id="localPreview" autoplay playsinline muted style="display:none; position:absolute; bottom:12px; right:12px; width:200px; border-radius:8px; border:2px solid var(--border);"></video>
+    <div id="placeholder" class="placeholder">
+      No screen is being shared yet.<br>
+      Click <strong>Share Screen</strong> to start, or join a room to view.
+    </div>
+    <div class="controls">
+      <button id="btnShare" class="primary" onclick="startSharing()">📺 Share Screen</button>
+      <button id="btnStop" class="danger" onclick="stopSharing()" style="display:none">⏹ Stop Sharing</button>
+      <button onclick="toggleFullscreen()">⛶ Fullscreen</button>
+    </div>
+  </div>
+
+  <!-- ── Sidebar ─────────────────────────────────────────────────── -->
+  <div class="sidebar" id="sidebar">
+    <div class="peers-panel">
+      <h3>Peers</h3>
+      <div id="peerList"><em style="color:var(--muted);font-size:13px">No one connected</em></div>
+    </div>
+    <div class="chat-panel">
+      <h3>Chat</h3>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendChat()">
+        <button onclick="sendChat()">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Setup overlay ───────────────────────────────────────────────── -->
+<div class="setup-overlay" id="setupOverlay">
+  <div class="setup-card">
+    <h2>🖥️ Desktop Share</h2>
+    <p>Share your screen with colleagues in real-time. Peer-to-peer, no data goes through the server.</p>
+    <label for="inputName">Your name</label>
+    <input type="text" id="inputName" placeholder="e.g. David" value="">
+    <label for="inputRoom">Room ID (leave blank to create new)</label>
+    <input type="text" id="inputRoom" placeholder="e.g. room-abc123">
+    <div class="btn-row">
+      <button class="primary" onclick="joinAsHost()">🎬 Share My Screen</button>
+      <button onclick="joinAsViewer()">👁️ View Someone's Screen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ────────────────────────────────────────────────────────────
+const BASE = location.origin;
+let roomId = null;
+let peerId = null;
+let peerName = 'User';
+let myRole = null;        // 'host' | 'viewer'
+let iceServers = [];
+let eventSource = null;   // SSE connection
+let pc = null;            // RTCPeerConnection
+let localStream = null;
+let peers = [];           // [{id, name, role}]
+
+// Check URL for room param
+const urlParams = new URLSearchParams(location.search);
+if (urlParams.get('room')) {
+  document.getElementById('inputRoom').value = urlParams.get('room');
+}
+
+// ── Setup ────────────────────────────────────────────────────────────
+async function joinAsHost() {
+  peerName = document.getElementById('inputName').value.trim() || 'Host';
+  const roomInput = document.getElementById('inputRoom').value.trim();
+  await joinRoom(roomInput || undefined, 'host');
+}
+
+async function joinAsViewer() {
+  peerName = document.getElementById('inputName').value.trim() || 'Viewer';
+  const roomInput = document.getElementById('inputRoom').value.trim();
+  if (!roomInput) {
+    alert('Please enter a Room ID to view someone\'s screen.');
+    return;
+  }
+  await joinRoom(roomInput, 'viewer');
+}
+
+async function joinRoom(rid, role) {
+  try {
+    const res = await fetch(`${BASE}/v1/desktop/rooms`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ roomId: rid, peerName, role }),
+    });
+    const data = await res.json();
+    roomId = data.room.id;
+    peerId = data.peer.id;
+    myRole = data.peer.role;
+    iceServers = data.iceServers || [];
+
+    // Update UI
+    document.getElementById('setupOverlay').classList.add('hidden');
+    document.getElementById('statusPill').textContent = 'Connected';
+    document.getElementById('statusPill').classList.add('connected');
+    document.getElementById('roomPill').style.display = '';
+    document.getElementById('roomPill').textContent = roomId;
+    document.getElementById('roomIdDisplay').textContent = `${location.origin}/desktop?room=${roomId}`;
+    updateUrl();
+
+    // Connect SSE
+    connectSSE();
+
+    // If host, auto-start sharing
+    if (myRole === 'host') {
+      await startSharing();
+    }
+  } catch (err) {
+    alert('Failed to join room: ' + err.message);
+  }
+}
+
+function updateUrl() {
+  if (roomId) {
+    history.replaceState(null, '', `/desktop?room=${roomId}`);
+  }
+}
+
+function copyRoomLink() {
+  const link = document.getElementById('roomIdDisplay').textContent;
+  navigator.clipboard.writeText(link).then(() => {
+    const el = document.getElementById('roomIdDisplay');
+    const orig = el.textContent;
+    el.textContent = '✓ Copied!';
+    setTimeout(() => { el.textContent = orig; }, 1500);
+  });
+}
+
+// ── SSE Connection ───────────────────────────────────────────────────
+function connectSSE() {
+  if (eventSource) eventSource.close();
+  eventSource = new EventSource(`${BASE}/v1/desktop/signal/stream?room=${roomId}&peer=${peerId}`);
+
+  eventSource.addEventListener('connected', (e) => {
+    const data = JSON.parse(e.data);
+    peers = data.peers || [];
+    renderPeers();
+  });
+
+  eventSource.addEventListener('peer-joined', (e) => {
+    const data = JSON.parse(e.data);
+    peers.push({ id: data.peerId, name: data.peerName, role: data.role });
+    renderPeers();
+    addSystemMessage(`${data.peerName} joined as ${data.role}`);
+
+    // If I'm the host and a viewer joined, create offer for them
+    if (myRole === 'host' && localStream && data.role === 'viewer') {
+      createOfferForPeer(data.peerId);
+    }
+  });
+
+  eventSource.addEventListener('peer-left', (e) => {
+    const data = JSON.parse(e.data);
+    peers = peers.filter(p => p.id !== data.peerId);
+    renderPeers();
+    addSystemMessage(`${data.peerName} left`);
+  });
+
+  eventSource.addEventListener('signal', (e) => {
+    const data = JSON.parse(e.data);
+    handleSignal(data);
+  });
+
+  eventSource.addEventListener('chat', (e) => {
+    const msg = JSON.parse(e.data);
+    addChatMessage(msg.fromName, msg.text, msg.timestamp);
+  });
+
+  eventSource.onerror = () => {
+    document.getElementById('statusPill').textContent = 'Reconnecting...';
+    document.getElementById('statusPill').classList.remove('connected');
+  };
+}
+
+// ── WebRTC ───────────────────────────────────────────────────────────
+function createPeerConnection(targetPeerId) {
+  if (pc) pc.close();
+
+  pc = new RTCPeerConnection({ iceServers });
+
+  pc.onicecandidate = (e) => {
+    if (e.candidate) {
+      sendSignal({
+        from: peerId,
+        to: targetPeerId,
+        roomId,
+        type: 'ice-candidate',
+        payload: e.candidate,
+      });
+    }
+  };
+
+  pc.ontrack = (e) => {
+    const video = document.getElementById('remoteVideo');
+    video.srcObject = e.streams[0];
+    video.style.display = '';
+    document.getElementById('placeholder').style.display = 'none';
+    document.getElementById('statusPill').textContent = 'Viewing';
+    document.getElementById('statusPill').classList.add('sharing');
+  };
+
+  pc.oniceconnectionstatechange = () => {
+    if (pc.iceConnectionState === 'disconnected' || pc.iceConnectionState === 'failed') {
+      addSystemMessage('Connection lost');
+    }
+  };
+
+  return pc;
+}
+
+async function startSharing() {
+  try {
+    localStream = await navigator.mediaDevices.getDisplayMedia({
+      video: { cursor: 'always', frameRate: { ideal: 30, max: 60 } },
+      audio: true,
+    });
+
+    // Show local preview
+    const preview = document.getElementById('localPreview');
+    preview.srcObject = localStream;
+    preview.style.display = '';
+
+    document.getElementById('btnShare').style.display = 'none';
+    document.getElementById('btnStop').style.display = '';
+    document.getElementById('statusPill').textContent = 'Sharing';
+    document.getElementById('statusPill').classList.add('sharing');
+    document.getElementById('placeholder').style.display = 'none';
+
+    // Handle user stopping via browser UI
+    localStream.getVideoTracks()[0].addEventListener('ended', () => {
+      stopSharing();
+    });
+
+    // Create offers for any existing viewers
+    for (const p of peers) {
+      if (p.id !== peerId && p.role === 'viewer') {
+        await createOfferForPeer(p.id);
+      }
+    }
+  } catch (err) {
+    console.error('Failed to get display media:', err);
+    if (err.name !== 'NotAllowedError') {
+      alert('Screen sharing failed: ' + err.message);
+    }
+  }
+}
+
+async function createOfferForPeer(targetPeerId) {
+  const conn = createPeerConnection(targetPeerId);
+  if (localStream) {
+    for (const track of localStream.getTracks()) {
+      conn.addTrack(track, localStream);
+    }
+  }
+  const offer = await conn.createOffer();
+  await conn.setLocalDescription(offer);
+  sendSignal({
+    from: peerId,
+    to: targetPeerId,
+    roomId,
+    type: 'offer',
+    payload: offer,
+  });
+}
+
+async function handleSignal(data) {
+  if (data.type === 'offer') {
+    // Viewer receives offer from host
+    const conn = createPeerConnection(data.from);
+    await conn.setRemoteDescription(new RTCSessionDescription(data.payload));
+    const answer = await conn.createAnswer();
+    await conn.setLocalDescription(answer);
+    sendSignal({
+      from: peerId,
+      to: data.from,
+      roomId,
+      type: 'answer',
+      payload: answer,
+    });
+  } else if (data.type === 'answer') {
+    // Host receives answer from viewer
+    if (pc) {
+      await pc.setRemoteDescription(new RTCSessionDescription(data.payload));
+    }
+  } else if (data.type === 'ice-candidate') {
+    if (pc) {
+      try {
+        await pc.addIceCandidate(new RTCIceCandidate(data.payload));
+      } catch (e) {
+        console.warn('ICE candidate error:', e);
+      }
+    }
+  }
+}
+
+function stopSharing() {
+  if (localStream) {
+    localStream.getTracks().forEach(t => t.stop());
+    localStream = null;
+  }
+  if (pc) {
+    pc.close();
+    pc = null;
+  }
+  document.getElementById('localPreview').style.display = 'none';
+  document.getElementById('localPreview').srcObject = null;
+  document.getElementById('btnShare').style.display = '';
+  document.getElementById('btnStop').style.display = 'none';
+  document.getElementById('statusPill').textContent = 'Connected';
+  document.getElementById('statusPill').classList.remove('sharing');
+  document.getElementById('placeholder').style.display = '';
+}
+
+// ── Signaling ────────────────────────────────────────────────────────
+async function sendSignal(signal) {
+  signal.timestamp = new Date().toISOString();
+  await fetch(`${BASE}/v1/desktop/signal`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(signal),
+  });
+}
+
+// ── Chat ─────────────────────────────────────────────────────────────
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text || !roomId || !peerId) return;
+  input.value = '';
+
+  await fetch(`${BASE}/v1/desktop/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ roomId, from: peerId, text }),
+  });
+}
+
+function addChatMessage(author, text, ts) {
+  const container = document.getElementById('chatMessages');
+  const time = ts ? new Date(ts).toLocaleTimeString() : '';
+  container.innerHTML += `<div class="chat-msg"><span class="author">${esc(author)}<span class="time">${time}</span></span><div class="text">${esc(text)}</div></div>`;
+  container.scrollTop = container.scrollHeight;
+}
+
+function addSystemMessage(text) {
+  const container = document.getElementById('chatMessages');
+  container.innerHTML += `<div class="chat-msg"><span class="author" style="color:var(--yellow)">System</span><div class="text" style="color:var(--muted)">${esc(text)}</div></div>`;
+  container.scrollTop = container.scrollHeight;
+}
+
+// ── UI helpers ───────────────────────────────────────────────────────
+function renderPeers() {
+  const el = document.getElementById('peerList');
+  if (peers.length === 0) {
+    el.innerHTML = '<em style="color:var(--muted);font-size:13px">No one connected</em>';
+    return;
+  }
+  el.innerHTML = peers.map(p => `
+    <div class="peer-item">
+      <div class="peer-dot"></div>
+      <span>${esc(p.name)}${p.id === peerId ? ' (you)' : ''}</span>
+      <span class="peer-role">${p.role}</span>
+    </div>
+  `).join('');
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('hidden');
+}
+
+function toggleFullscreen() {
+  const el = document.getElementById('videoArea');
+  if (!document.fullscreenElement) {
+    el.requestFullscreen?.();
+  } else {
+    document.exitFullscreen?.();
+  }
+}
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+// ── Cleanup on page unload ──────────────────────────────────────────
+window.addEventListener('beforeunload', () => {
+  if (eventSource) eventSource.close();
+  if (pc) pc.close();
+  if (localStream) localStream.getTracks().forEach(t => t.stop());
+});
+</script>
+</body>
+</html>

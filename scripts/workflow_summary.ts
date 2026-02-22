@@ -65,7 +65,7 @@ export function createSummary(summary: WorkflowSummary): void {
 export function logError(
   errors: WorkflowSummary["errors"],
   step: string,
-  error: any,
+  error: unknown,
   issueNumber?: number
 ): void {
   const errorMessage = error instanceof Error ? error.message : String(error);

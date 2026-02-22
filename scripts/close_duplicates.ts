@@ -5,15 +5,9 @@
 
 import { Octokit } from "@octokit/rest";
 import { retryWithBackoff } from "./retry_utils.js";
+import { checkRateLimit } from "./rate_limit_utils.js";
 
 const DAYS_THRESHOLD = 3;
-
-interface IssueWithTimeline {
-  number: number;
-  title: string;
-  duplicateLabelDate: Date | null;
-  hasDuplicateLabel: boolean;
-}
 
 /**
  * Get the date when duplicate label was added
@@ -240,14 +234,28 @@ async function main() {
 
     const client = new Octokit({ auth: githubToken });
 
-    // Fetch all open issues with duplicate label
-    const { data: issues } = await client.issues.listForRepo({
-      owner,
-      repo,
-      state: "open",
-      labels: "duplicate",
-      per_page: 100,
-    });
+    // Fetch ALL open issues with duplicate label (paginated)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Octokit returns complex union types
+    const issues: any[] = [];
+    let page = 1;
+    const perPage = 100;
+    const maxPages = 10; // up to 1000 issues
+
+    while (page <= maxPages) {
+      const { data: pageIssues } = await client.issues.listForRepo({
+        owner,
+        repo,
+        state: "open",
+        labels: "duplicate",
+        per_page: perPage,
+        page,
+      });
+
+      if (pageIssues.length === 0) break;
+      issues.push(...pageIssues);
+      if (pageIssues.length < perPage) break;
+      page++;
+    }
 
     console.log(`Found ${issues.length} open issue(s) with duplicate label`);
 
@@ -263,11 +271,15 @@ async function main() {
     let skippedCount = 0;
 
     for (const issue of issues) {
+      // Rate-limit awareness
+      await checkRateLimit(client);
+
       console.log(`\nProcessing issue #${issue.number}: ${issue.title}`);
 
       // Check if issue still has duplicate label
       const hasDuplicateLabel = issue.labels.some(
-        (label) =>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- label can be string or object
+        (label: any) =>
           (typeof label === "string" ? label : label.name) === "duplicate"
       );
 

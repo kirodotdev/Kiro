@@ -5,11 +5,22 @@
 
 import { Octokit } from "@octokit/rest";
 import { retryWithBackoff } from "./retry_utils.js";
+import { checkRateLimit } from "./rate_limit_utils.js";
 
 const DAYS_THRESHOLD = 7;
 
+/** Bot suffixes that should not count as user activity */
+const BOT_LOGIN_PATTERNS = ["[bot]", "-bot", "github-actions"];
+
+/** Check whether a login looks like a bot account */
+function isBotUser(login: string): boolean {
+  const lower = login.toLowerCase();
+  return BOT_LOGIN_PATTERNS.some((p) => lower.includes(p));
+}
+
 /**
- * Get last activity date for an issue
+ * Get last activity date for an issue, ignoring bot-generated comments.
+ * Only human comments and label changes count as real activity.
  */
 async function getLastActivityDate(
   client: Octokit,
@@ -38,13 +49,20 @@ async function getLastActivityDate(
 
     const dates: Date[] = [];
 
-    // Add comment dates
-    if (comments.length > 0) {
-      dates.push(new Date(comments[0].created_at));
+    // Filter out bot comments — only human activity should reset the stale clock
+    const humanComments = comments.filter((c) => {
+      const login = c.user?.login || "";
+      return !isBotUser(login);
+    });
+
+    if (humanComments.length > 0) {
+      dates.push(new Date(humanComments[0].created_at));
     }
 
     // Add label event dates
-    const labelEvents = events.filter((event) => event.event === "labeled" || event.event === "unlabeled");
+    const labelEvents = events.filter(
+      (event) => event.event === "labeled" || event.event === "unlabeled"
+    );
     if (labelEvents.length > 0) {
       dates.push(new Date(labelEvents[labelEvents.length - 1].created_at));
     }
@@ -166,14 +184,28 @@ async function main() {
 
     const client = new Octokit({ auth: githubToken });
 
-    // Fetch all open issues with pending-response label
-    const { data: issues } = await client.issues.listForRepo({
-      owner,
-      repo,
-      state: "open",
-      labels: "pending-response",
-      per_page: 100,
-    });
+    // Fetch ALL open issues with pending-response label (paginated)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Octokit returns complex union types
+    const issues: any[] = [];
+    let page = 1;
+    const perPage = 100;
+    const maxPages = 10; // up to 1000 issues
+
+    while (page <= maxPages) {
+      const { data: pageIssues } = await client.issues.listForRepo({
+        owner,
+        repo,
+        state: "open",
+        labels: "pending-response",
+        per_page: perPage,
+        page,
+      });
+
+      if (pageIssues.length === 0) break;
+      issues.push(...pageIssues);
+      if (pageIssues.length < perPage) break;
+      page++;
+    }
 
     console.log(`Found ${issues.length} open issue(s) with pending-response label`);
 
@@ -188,11 +220,15 @@ async function main() {
     let skippedCount = 0;
 
     for (const issue of issues) {
+      // Rate-limit awareness: check every N requests
+      await checkRateLimit(client);
+
       console.log(`\nProcessing issue #${issue.number}: ${issue.title}`);
 
       // Check if issue still has pending-response label
       const hasPendingResponseLabel = issue.labels.some(
-        (label) =>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- label can be string or object
+        (label: any) =>
           (typeof label === "string" ? label : label.name) === "pending-response"
       );
 
