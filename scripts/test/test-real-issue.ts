@@ -50,7 +50,7 @@ async function testRealIssue() {
     console.log("─".repeat(60));
     console.log(`Title: ${issue.title}`);
     console.log(`State: ${issue.state}`);
-    console.log(`Labels: ${issue.labels.map((l: any) => l.name).join(", ") || "none"}`);
+    console.log(`Labels: ${(issue.labels || []).map((l: any) => l.name).join(", ") || "none"}`);
     console.log(`Created: ${issue.created_at}`);
     console.log(`URL: ${issue.html_url}`);
     console.log("─".repeat(60));

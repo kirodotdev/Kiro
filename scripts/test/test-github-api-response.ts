@@ -49,7 +49,7 @@ async function testGitHubAPIResponse() {
       console.log(`  - number: ${firstIssue.number}`);
       console.log(`  - title: ${firstIssue.title}`);
       console.log(`  - state: ${firstIssue.state}`);
-      console.log(`  - labels: ${firstIssue.labels.map((l: any) => l.name).join(", ")}`);
+      console.log(`  - labels: ${(firstIssue.labels || []).map((l: any) => l.name).join(", ")}`);
       console.log(`  - type: ${firstIssue.type || "NOT AVAILABLE"}`);
       console.log(`  - pull_request: ${firstIssue.pull_request ? "YES" : "NO"}`);
       console.log("");

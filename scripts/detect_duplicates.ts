@@ -122,7 +122,7 @@ export async function fetchExistingIssues(
       }
 
       // Fallback: Check for bug or feature labels
-      const labelNames = issue.labels.map((l: any) =>
+      const labelNames = (issue.labels || []).map((l: any) =>
         typeof l === "string" ? l.toLowerCase() : (l.name || "").toLowerCase()
       );
       return labelNames.includes("bug") || labelNames.includes("feature");
@@ -143,7 +143,7 @@ export async function fetchExistingIssues(
       body: issue.body || "",
       created_at: new Date(issue.created_at),
       updated_at: new Date(issue.updated_at),
-      labels: issue.labels.map((l: any) =>
+      labels: (issue.labels || []).map((l: any) =>
         typeof l === "string" ? l : l.name || ""
       ),
       url: issue.html_url,
