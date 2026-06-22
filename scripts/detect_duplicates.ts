@@ -10,6 +10,7 @@ import {
 } from "@aws-sdk/client-bedrock-runtime";
 import { DuplicateMatch, IssueData } from "./data_models.js";
 import { retryWithBackoff } from "./retry_utils.js";
+import { sanitizePromptInput } from "./sanitize_utils.js";
 
 const MODEL_ID = "us.anthropic.claude-sonnet-4-20250514-v1:0";
 const SIMILARITY_THRESHOLD = 0.8;
@@ -31,50 +32,6 @@ const RECENT_WINDOW_HOURS = parseInt(
 const EXCLUDE_LABELS = new Set<string>([
   "duplicate",
 ]);
-
-/**
- * Sanitize user input to prevent prompt injection attacks
- */
-function sanitizePromptInput(input: string, maxLength: number): string {
-  if (!input) {
-    return "";
-  }
-
-  // Truncate to maximum length
-  let sanitized = input.substring(0, maxLength);
-
-  // Remove potential prompt injection patterns
-  // These patterns could be used to manipulate the AI's behavior
-  const dangerousPatterns = [
-    /ignore\s+(all\s+)?(previous|above|prior)\s+instructions?/gi,
-    /disregard\s+(all\s+)?(previous|above|prior)\s+instructions?/gi,
-    /forget\s+(all\s+)?(previous|above|prior)\s+instructions?/gi,
-    /new\s+instructions?:/gi,
-    /system\s*:/gi,
-    /assistant\s*:/gi,
-    /\[SYSTEM\]/gi,
-    /\[ASSISTANT\]/gi,
-    /\<\|im_start\|\>/gi,
-    /\<\|im_end\|\>/gi,
-  ];
-
-  for (const pattern of dangerousPatterns) {
-    sanitized = sanitized.replace(pattern, "[REDACTED]");
-  }
-
-  // Escape backticks that could break JSON formatting
-  sanitized = sanitized.replace(/`/g, "'");
-
-  // Remove excessive newlines that could break prompt structure
-  sanitized = sanitized.replace(/\n{4,}/g, "\n\n\n");
-
-  // Add truncation notice if content was cut
-  if (input.length > maxLength) {
-    sanitized += "\n\n[Content truncated for security]";
-  }
-
-  return sanitized;
-}
 
 /**
  * Fetch existing open issues from repository as duplicate candidates.
