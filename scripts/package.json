@@ -10,7 +10,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@aws-sdk/client-bedrock-runtime": "^3.490.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.1027.0",
     "@octokit/rest": "^20.0.2"
   },
   "devDependencies": {
