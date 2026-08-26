@@ -1,89 +1,84 @@
-<div align="left">
-  <img src="assets/kiro-icon.png" alt="Kiro" width="120" height="120">
-  
-  # Kiro
-  
-  Kiro is an agentic IDE and command-line interface that helps you go from prototype to production with spec-driven development, agent hooks,powers, and natural language coding assistance. Build faster with AI-powered features that understand your entire codebase, turn prompts into structured specs, and automate repetitive tasks.
+<p align="center">
+  <img src="assets/kiro-icon.png" alt="Kiro" width="112" height="112">
+</p>
 
-  [<img alt="Discord link" src="https://img.shields.io/discord/1374034175430230016?style=flat&logo=discord&logoColor=white&label=discord&color=%239046ff" />](https://discord.gg/kirodotdev)
-</div>
+<h1 align="center">Kiro</h1>
 
-## Core Capabilities
+<p align="center">
+  Kiro is an agentic AI development platform that helps developers and teams plan, build, and review software. Turn prompts into executable specs, validate correctness, work across large codebases with parallel agents, and carry the same project context across the IDE, CLI, Web, Mobile, and Crew.
+</p>
 
-- **Specs** - Plan and build features using structured specifications that break down requirements into detailed implementation plans
-- **Hooks** - Automate repetitive tasks with intelligent triggers that respond to file changes and development events
-- **Agentic Chat** - Build features through natural conversation with Kiro that understands your project context
-- **Steering** - Guide Kiro's behavior with custom rules and project-specific context through markdown files
-- **MCP Servers** - Connect external tools and data sources through the Model Context Protocol
-- **Powers** -  Specialized context and tools for Kiro agents on-demand. Extend agent capabilities with domain-specific knowledge and custom integrations
-- **Privacy First** - Keep your code secure with enterprise-grade security and privacy
+<p align="center">
+  <a href="https://discord.gg/kirodotdev">
+    <img alt="Join the Kiro Discord community" src="https://img.shields.io/discord/1374034175430230016?style=flat&logo=discord&logoColor=white&label=discord&color=%239046ff">
+  </a>
+</p>
 
-## Available Interfaces
+## About this repository
 
-Kiro is available as both a desktop application and command-line tool:
+This repository is the public issue and feedback tracker for Kiro. Use it to report bugs, suggest ideas, and discuss product improvements. The Kiro product source code is not hosted here. The repository also contains the automation used to triage and manage its GitHub issues.
 
-### Kiro IDE (Desktop Application)
-The standalone desktop application is available for:
-- macOS
-- Windows
-- Linux
+- [Report a bug](https://github.com/kirodotdev/Kiro/issues/new?template=bug_report.yml)
+- [Suggest an idea](https://github.com/kirodotdev/Kiro/issues/new?template=feature_request.yml)
+- [Browse existing issues](https://github.com/kirodotdev/Kiro/issues)
 
-### Kiro CLI
-Command-line interface for integrating Kiro into your development workflows and automation scripts.
+For questions and community support, join the [Kiro Discord server](https://discord.gg/kirodotdev).
 
-For detailed information on both interfaces, visit [kiro.dev](https://kiro.dev)
+## Choose your Kiro surface
 
-## Getting Started
+One unified agent harness powers every Kiro surface, so your specs, steering, permissions, hooks, MCP servers, and custom agents can follow your project across workflows.
 
-### Download & Install
+| Surface    | Best for                                                                                         | Get started                                         |
+| ---------- | ------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| **IDE**    | Local development with editor integration, chat, specs, and hooks                                | [Download Kiro](https://kiro.dev/downloads/)        |
+| **CLI**    | Terminal-native work, headless automation, and CI/CD                                             | [CLI setup](https://kiro.dev/docs/cli/setup/)       |
+| **Web**    | Delegating multi-repository tasks in isolated cloud sandboxes                                    | [Kiro Web setup](https://kiro.dev/docs/web/setup/)  |
+| **Mobile** | Monitoring tasks, reviewing pull requests, and working with agents on the go                     | [Mobile preview](https://kiro.dev/docs/mobile/)     |
+| **Crew**   | A persistent open-source development workspace with memory, scheduling, and multi-channel access | [Kiro Crew](https://github.com/kirodotdev/KiroCrew) |
 
-**IDE:** Download the Kiro desktop application directly from [kiro.dev](https://kiro.dev)
+## What you can do with Kiro
 
-**CLI:** Instructions for installing the Kiro CLI are available in our [documentation](https://kiro.dev/cli)
+- **Move from intent to implementation.** Use [Specs](https://kiro.dev/docs/specs/) to structure requirements, design decisions, and implementation tasks, then run [Requirements Analysis](https://kiro.dev/docs/specs/analyze-requirements/) to find contradictions, ambiguities, and gaps before coding begins.
+- **Check that the code matches the spec.** Use [correctness with property-based testing](https://kiro.dev/docs/specs/correctness/) to turn requirements into executable properties and exercise them across generated inputs that example-based tests may miss.
+- **Build an agent for the job.** Create [custom agents](https://kiro.dev/docs/custom-agents/) with focused instructions and tools, guide them with project conventions in [Steering](https://kiro.dev/docs/steering/), and package reusable expertise as [Agent Skills](https://kiro.dev/docs/skills/).
+- **Hand off work to the cloud.** Start a [cloud session](https://kiro.dev/docs/cloud-sessions/) in a managed sandbox, let it continue while you are away, and resume it from the IDE, CLI, Web, or Mobile. Cloud sessions are currently in Preview.
+- **Automate and connect your toolchain.** React to agent events with [Hooks](https://kiro.dev/docs/hooks/), add on-demand tools and knowledge through [Powers](https://kiro.dev/docs/powers/), and connect external systems with [MCP](https://kiro.dev/docs/mcp/).
+- **Stay in control of agent changes.** Set access boundaries with [permissions](https://kiro.dev/docs/permissions/), keep sensitive paths out of context with [`.kiroignore`](https://kiro.dev/docs/kiroignore/), and inspect or undo changes with [checkpoints and rewind](https://kiro.dev/docs/checkpoints/).
+- **Roll Kiro out across teams.** Follow the [enterprise onboarding](https://kiro.dev/docs/enterprise/getting-started/) path to connect identity and manage subscriptions, apply organization-wide [governance controls](https://kiro.dev/docs/enterprise/governance/), and [monitor usage](https://kiro.dev/docs/enterprise/monitor-and-track/).
 
-### First Project
+## Get started
 
-Get started with Kiro by following our comprehensive **[first project guide](https://kiro.dev/docs/getting-started/first-project/)**. This hands-on tutorial walks you through Kiro's essential features.
+- [Install Kiro](https://kiro.dev/docs/getting-started/installation/)
+- [Authenticate](https://kiro.dev/docs/getting-started/authentication/)
+- [Build your first project](https://kiro.dev/docs/getting-started/first-project/)
+- [Learn by playing](https://kiro.dev/docs/guides/learn-by-playing/)
 
-**What you'll learn:**
-- Setting up steering files for project-specific guidance
-- Creating and managing specs for structured development
-- Configuring hooks to automate your workflow
-- Connecting MCP servers for external integrations
+## Resources
 
-
-### One-Click Migration
-Import your VS Code setup including extensions and settings during the initial setup process.
-
-## Documentation
-
-**[📚 View Documentation →](https://kiro.dev/docs/)**
-
-- [Getting Started](https://kiro.dev/docs/getting-started) - Installation and first project setup for IDE and CLI
-- [IDE Guide](https://kiro.dev/docs/) - Desktop application features and workflows
-- [CLI Guide](https://kiro.dev/docs/cli) - Command-line interface usage and automation
-
-## Issue Reporting
-We welcome feedback and issue reports to help improve Kiro. Please use this repository to:
-- Report bugs and technical issues
-- Request new features
-- Share feedback on existing functionality
-- Discuss improvements and enhancements
+- [Documentation](https://kiro.dev/docs/)
+- [Changelog](https://kiro.dev/changelog/)
+- [Blog](https://kiro.dev/blog/)
+- [Pricing](https://kiro.dev/pricing/)
+- [Enterprise](https://kiro.dev/enterprise/)
+- [Showcase](https://kiro.dev/showcase/)
+- [FAQs](https://kiro.dev/faq/)
 
 ## Support
-For additional support beyond issue reporting:
-- Join our community [discord server](https://discord.gg/kirodotdev) for quick help and discussions with other developers
-- For billing-related questions, please contact our support team through [AWS Billing Support](https://support.aws.amazon.com/#/contacts/kiro).
-- If you are an existing AWS customer with a [paid support plan](https://aws.amazon.com/premiumsupport/plans/), for technical issues or general assistance, reach out via [AWS Support](https://support.console.aws.amazon.com/support/home#/).
+
+- For product questions, start with the [documentation](https://kiro.dev/docs/) or [FAQs](https://kiro.dev/faq/).
+- For community help, join the [Kiro Discord server](https://discord.gg/kirodotdev).
+- For billing help, visit [Kiro account settings](https://app.kiro.dev/settings/account).
 
 ## Security
-If you discover a potential security issue in this project we ask that you notify AWS/Amazon Security via our [vulnerability reporting page](http://aws.amazon.com/security/vulnerability-reporting/). Please do **not** create a public github issue.
+
+If you discover a potential security issue, notify AWS/Amazon Security through the [vulnerability reporting page](https://aws.amazon.com/security/vulnerability-reporting/). Do not create a public GitHub issue for security reports.
+
+See the [Kiro privacy and security documentation](https://kiro.dev/docs/privacy-and-security/) for information about data protection, infrastructure, permissions, and enterprise controls.
 
 ## Code of Conduct
-This project has adopted the [Amazon Open Source Code of Conduct](https://aws.github.io/code-of-conduct).
-For more information see the [Code of Conduct FAQ](https://aws.github.io/code-of-conduct-faq) or contact
-opensource-codeofconduct@amazon.com with any additional questions or comments.
 
+This project has adopted the [Amazon Open Source Code of Conduct](https://aws.github.io/code-of-conduct). See the [Code of Conduct FAQ](https://aws.github.io/code-of-conduct-faq) or contact opensource-codeofconduct@amazon.com with questions.
 
 ---
+
 ©2026 Amazon.com, Inc. or its affiliates (collectively, "Amazon"). All Rights Reserved.
