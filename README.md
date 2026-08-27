@@ -26,7 +26,7 @@ For questions and community support, join the [Kiro Discord server](https://disc
 
 ## Choose your Kiro surface
 
-One unified agent harness powers every Kiro surface, so your specs, steering, permissions, hooks, MCP servers, and custom agents can follow your project across workflows.
+[One unified agent harness](https://kiro.dev/blog/one-agent/) powers every Kiro surface, so your specs, steering, permissions, hooks, MCP servers, and custom agents can follow your project across workflows.
 
 | Surface    | Best for                                                                                         | Get started                                         |
 | ---------- | ------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
@@ -68,6 +68,7 @@ One unified agent harness powers every Kiro surface, so your specs, steering, pe
 - For product questions, start with the [documentation](https://kiro.dev/docs/) or [FAQs](https://kiro.dev/faq/).
 - For community help, join the [Kiro Discord server](https://discord.gg/kirodotdev).
 - For billing help, visit [Kiro account settings](https://app.kiro.dev/settings/account).
+- If your Kiro account is suspended, contact [Kiro support](https://support.aws.amazon.com/#/contacts/kiro).
 
 ## Security
 
