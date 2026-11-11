@@ -18,7 +18,6 @@ body:
         - CLI
         - IDE and CLI
         - Autonomous Agent
-      default: 0
     validations:
       required: true
 
