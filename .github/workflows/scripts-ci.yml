@@ -1,0 +1,36 @@
+name: Scripts CI
+# Build + test gate for the issue-automation code in scripts/.
+# Runs on every PR (including Dependabot PRs) so it can be a required status
+# check and gate the Dependabot auto-merge remediation path. Deliberately not
+# path-filtered: a required check that is skipped never reports a status and
+# would block merges on unrelated PRs.
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: scripts-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: scripts/package-lock.json
+      - name: Install dependencies
+        working-directory: scripts
+        run: npm ci
+      - name: Build TypeScript
+        working-directory: scripts
+        run: npm run build
+      - name: Run unit tests
+        working-directory: scripts
+        run: npm test
